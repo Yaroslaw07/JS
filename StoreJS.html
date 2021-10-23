@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>StoreJS</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="container">
+        <section class="store">
+        </section>
+        <hr>
+        <section class="basket">
+        </section>
+        <hr>
+        <span>
+      <b>Итого: </b><span id="sum">0</span>
+        </span>
+    </div>
+
+
+
+    <script>
+        const store = document.querySelector(".store");
+        const basket = document.querySelector(".basket");
+        const sum = document.querySelector("#sum");
+        let basketUnique = [];
+
+        const productItems = [{
+            title: "Чашка",
+            price: 249.0,
+            image: "https://gifty.in.ua/public/cache/images/2/0/0/5/6/e45c88cab5fe5b7cb1e5819c65f86a15_900_700.jpg",
+        }, {
+            title: "Футболка",
+            price: 100,
+            image: "https://img.loveandlive.ua/r/wU4a_LUWON4/fit/640/640/ce/1/plain/images/products/1/5689/356972089/MNK__ZZ3-04314M.00P-20_.jpg",
+        }, {
+            title: "Плед",
+            price: 350,
+            image: "https://textile-alvit.org/image/cache/catalog/pledyipokryvala/poloska/1405-39-1000x1340.jpg",
+        }, {
+            title: "Блокнот",
+            price: 150,
+            image: "https://gifty.in.ua/public/cache/images/6/1/6/4/b90f8428c3cb590dc7c7847b36f14e36_900_700.jpg",
+        }, {
+            title: "Календар",
+            price: 100,
+            image: "https://gifty.in.ua/public/cache/images/8/5/6/7/5/d926f57c8e6153cbfa1fd5c3e753b3fc_600_1800.jpg",
+        }];
+
+
+
+
+
+        fillStore(productItems);
+
+        console.log(basketUnique);
+
+        function fillStore(productItems) {
+            if (!productItems) return;
+
+
+            for (let i = 0; i < productItems.length; i++) {
+                const productItem = productItems[i];
+
+                console.log();
+                const article = createStoreProductArticle(productItem);
+
+                const addButton = article.querySelector(".store_product-add")
+                addButton.addEventListener('click', function() {
+                    fillBasket(productItems[i], i);
+                });
+
+                store.appendChild(article);
+            }
+        }
+
+
+
+        function createStoreProductArticle(productItem) {
+            const article = document.createElement("article");
+            article.classList.add("store_product");
+
+            article.innerHTML = `
+        <div class="store_product-image">
+            <center>
+                <img src="${productItem.image}" alt="">
+            </center>
+        </div>
+        <div class="store_product-title">${productItem.title}</div>
+        <div class="store_product-price">
+          <span>${productItem.price}</span> грн.
+        </div>
+        <div class="store_product-add">
+          <button>Add</button>
+        </div>`;
+
+            return article;
+        }
+
+
+        function fillBasket(productItem, i) {
+            if (!productItem) return;
+
+            if (basketUnique.includes(i)) return;
+
+
+
+            const article = createBasketProductArticle(productItem);
+
+            const countInput = article.querySelector(".basket_product-count input");
+            countInput.addEventListener('change', onProductPriceChanges);
+
+            const deleteButton = article.querySelector(".basket_product-delete button");
+            deleteButton.addEventListener('click', function() {
+                basket.removeChild(article);
+                onProductPriceChanges();
+            });
+
+            basketUnique.push(i);
+
+            basket.appendChild(article);
+            onProductPriceChanges();
+        }
+
+        function createBasketProductArticle(productItem) {
+            const article = document.createElement("article");
+            article.classList.add("basket_product");
+
+            article.innerHTML = `
+            <div class="basket_product-image">
+                <center>
+                    <img src="${productItem.image}" alt="">
+                </center>
+            </div>
+            <div class="basket_product-title">${productItem.title}</div>
+            <div class="basket_product-price">
+              <span>${productItem.price}</span> грн.
+            </div>
+            <div class="basket_product-count">
+                <input type="number" min="1" value="1">
+            </div>
+            <div class="basket_product-delete">
+                <button>X</button>
+            </div>`;
+
+            return article;
+        }
+
+        function onProductPriceChanges() {
+            const products = basket.querySelectorAll(".basket_product");
+
+            let totalPrice = 0;
+            for (product of products) {
+
+                const price = parseFloat(product.querySelector(".basket_product-price span").innerText);
+
+
+
+                const productCountInput = product.querySelector(".basket_product-count input");
+                const inputValue = productCountInput.value;
+
+                totalPrice += inputValue * price;
+            }
+
+            sum.innerText = totalPrice;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+.store,
+.basket {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: end;
+}
+
+.store_product,
+.basket_product {
+    display: grid;
+    justify-items: center;
+    grid-gap: 10px;
+}
+
+.store_product-image img,
+.basket_product-image img {
+    height: 100%;
+    width: 50%;
+}
